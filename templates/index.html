@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eurovision Twitter Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">CS498 Cloud Data Management</p>
+        <h1>Eurovision Twitter Analytics</h1>
+        <p class="lede">
+          Explore activity from the 2018 Eurovision Final through a MongoDB-backed dashboard with
+          live leaderboards, hashtag trends, verified-user engagement, and reply exploration.
+        </p>
+      </div>
+      <div class="hero-meta">
+        <div class="meta-card">
+          <span class="meta-label">Data source</span>
+          <strong>Kaggle JSON subset</strong>
+        </div>
+        <div class="meta-card">
+          <span class="meta-label">Storage model</span>
+          <strong>MongoDB Atlas collections</strong>
+        </div>
+        <div class="meta-card">
+          <span class="meta-label">Query strategy</span>
+          <strong>Python-side streaming + cache</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Overview</h2>
+          <span id="status-pill" class="status-pill">Loading live counts...</span>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span class="stat-label">Tweets</span>
+            <strong id="stat-tweets">-</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Replies</span>
+            <strong id="stat-replies">-</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Retweets</span>
+            <strong id="stat-retweets">-</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Users</span>
+            <strong id="stat-users">-</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="two-column">
+        <article class="panel chart-panel">
+          <div class="panel-heading">
+            <h2>Post Mix</h2>
+          </div>
+          <canvas id="mix-chart"></canvas>
+        </article>
+        <article class="panel chart-panel">
+          <div class="panel-heading">
+            <h2>Top Hashtags</h2>
+          </div>
+          <canvas id="hashtag-chart"></canvas>
+        </article>
+      </section>
+
+      <section class="two-column">
+        <article class="panel">
+          <div class="panel-heading">
+            <h2>Most Active Users</h2>
+            <label class="inline-control">
+              <span>Limit</span>
+              <select id="users-limit">
+                <option>10</option>
+                <option selected>20</option>
+                <option>30</option>
+              </select>
+            </label>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Screenname</th>
+                  <th>Posts</th>
+                </tr>
+              </thead>
+              <tbody id="users-table"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-heading">
+            <h2>Geographic Activity</h2>
+            <label class="inline-control">
+              <span>Limit</span>
+              <select id="locations-limit">
+                <option>10</option>
+                <option selected>20</option>
+                <option>30</option>
+              </select>
+            </label>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Location</th>
+                  <th>Posts</th>
+                </tr>
+              </thead>
+              <tbody id="locations-table"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="two-column">
+        <article class="panel">
+          <div class="panel-heading">
+            <h2>Verified User Engagement</h2>
+          </div>
+          <div id="verified-cards" class="verified-grid"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-heading">
+            <h2>Search & Explore</h2>
+          </div>
+          <div class="search-stack">
+            <form id="user-search-form" class="search-form">
+              <label for="screenname-input">Search user by screenname</label>
+              <div class="search-row">
+                <input id="screenname-input" name="screenname" placeholder="eurovision" />
+                <button type="submit">Find user</button>
+              </div>
+            </form>
+
+            <form id="hashtag-search-form" class="search-form">
+              <label for="hashtag-input">Search posts by hashtag</label>
+              <div class="search-row">
+                <input id="hashtag-input" name="tag" placeholder="#eurovision" />
+                <button type="submit">Find hashtag</button>
+              </div>
+            </form>
+
+            <form id="reply-search-form" class="search-form">
+              <label for="tweet-id-input">Explore replies around a tweet ID</label>
+              <div class="search-row">
+                <input id="tweet-id-input" name="tweet_id" placeholder="tweet id or leave blank for sample replies" />
+                <button type="submit">Inspect replies</button>
+              </div>
+            </form>
+
+            <div id="search-results" class="results-card">
+              <p class="results-placeholder">Run a search to inspect user profiles, hashtag matches, or reply chains.</p>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const formatNumber = (value) => new Intl.NumberFormat().format(value ?? 0);
+
+    const state = {
+      mixChart: null,
+      hashtagChart: null,
+    };
+
+    async function fetchJson(url) {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Request failed: ${response.status}`);
+      }
+      return response.json();
+    }
+
+    function setStatus(text, tone = "default") {
+      const pill = document.getElementById("status-pill");
+      pill.textContent = text;
+      pill.dataset.tone = tone;
+    }
+
+    function renderOverview(stats) {
+      document.getElementById("stat-tweets").textContent = formatNumber(stats.tweets);
+      document.getElementById("stat-replies").textContent = formatNumber(stats.replies);
+      document.getElementById("stat-retweets").textContent = formatNumber(stats.retweets);
+      document.getElementById("stat-users").textContent = formatNumber(stats.users);
+      setStatus(`Live from MongoDB Atlas • ${formatNumber(stats.total_posts)} total posts`, "success");
+
+      const ctx = document.getElementById("mix-chart");
+      state.mixChart?.destroy();
+      state.mixChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: ["Tweets", "Replies", "Retweets"],
+          datasets: [{
+            data: [stats.tweets, stats.replies, stats.retweets],
+            backgroundColor: ["#ff6b35", "#ffd166", "#0ea5e9"],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { labels: { color: "#f7f2ea" } }
+          }
+        }
+      });
+    }
+
+    function renderTableRows(targetId, rows, columns) {
+      const tbody = document.getElementById(targetId);
+      tbody.innerHTML = rows.map((row) => {
+        const cells = columns.map((column) => `<td>${column(row)}</td>`).join("");
+        return `<tr>${cells}</tr>`;
+      }).join("") || `<tr><td colspan="${columns.length}">No data found.</td></tr>`;
+    }
+
+    function renderHashtagChart(items) {
+      const labels = items.slice(0, 12).map((item) => `#${item.hashtag}`);
+      const data = items.slice(0, 12).map((item) => item.count);
+      const ctx = document.getElementById("hashtag-chart");
+      state.hashtagChart?.destroy();
+      state.hashtagChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            data,
+            backgroundColor: "#a3e635",
+            borderRadius: 8
+          }]
+        },
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          scales: {
+            x: {
+              ticks: { color: "#f7f2ea" },
+              grid: { color: "rgba(247, 242, 234, 0.08)" }
+            },
+            y: {
+              ticks: { color: "#f7f2ea" },
+              grid: { display: false }
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    function renderVerifiedCards(items) {
+      const container = document.getElementById("verified-cards");
+      container.innerHTML = items.map((item) => {
+        const bars = item.engagement_breakdown.map((entry) => `
+          <div class="breakdown-row">
+            <span>${entry.type.replace("_", " ")}</span>
+            <span>${entry.percentage}%</span>
+          </div>
+          <div class="meter"><span style="width:${entry.percentage}%"></span></div>
+        `).join("");
+
+        return `
+          <article class="verified-card">
+            <h3>${item.username ?? "Unknown user"}</h3>
+            <p>@${item.screenname ?? "unknown"} • ${formatNumber(item.total)} posts</p>
+            ${bars}
+          </article>
+        `;
+      }).join("") || `<p>No verified-user engagement data found.</p>`;
+    }
+
+    function renderJsonResults(title, items) {
+      const body = items.length
+        ? `<pre>${JSON.stringify(items, null, 2)}</pre>`
+        : `<p class="results-placeholder">No matching results.</p>`;
+      document.getElementById("search-results").innerHTML = `<h3>${title}</h3>${body}`;
+    }
+
+    async function loadUsers() {
+      const limit = document.getElementById("users-limit").value;
+      const data = await fetchJson(`/api/top-users?limit=${limit}`);
+      renderTableRows("users-table", data.items, [
+        (row) => `${row.rank}. ${row.username ?? "Unknown"}${row.verified ? ' <span class="chip">verified</span>' : ""}`,
+        (row) => row.screenname ? `@${row.screenname}` : "-",
+        (row) => formatNumber(row.total_posts)
+      ]);
+    }
+
+    async function loadLocations() {
+      const limit = document.getElementById("locations-limit").value;
+      const data = await fetchJson(`/api/top-locations?limit=${limit}`);
+      renderTableRows("locations-table", data.items, [
+        (row) => row.location || "Unknown",
+        (row) => formatNumber(row.post_count)
+      ]);
+    }
+
+    async function bootstrap() {
+      try {
+        const [stats, hashtags, verified] = await Promise.all([
+          fetchJson("/api/stats"),
+          fetchJson("/api/top-hashtags?limit=20"),
+          fetchJson("/api/verified-engagement?limit=8")
+        ]);
+
+        renderOverview(stats);
+        renderHashtagChart(hashtags.items);
+        renderVerifiedCards(verified.items);
+        await Promise.all([loadUsers(), loadLocations()]);
+      } catch (error) {
+        console.error(error);
+        setStatus("Unable to load analytics. Check the API or MongoDB connection.", "error");
+      }
+    }
+
+    document.getElementById("users-limit").addEventListener("change", loadUsers);
+    document.getElementById("locations-limit").addEventListener("change", loadLocations);
+
+    document.getElementById("user-search-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const screenname = document.getElementById("screenname-input").value.trim();
+      if (!screenname) return;
+      const data = await fetchJson(`/api/search-user?screenname=${encodeURIComponent(screenname)}`);
+      renderJsonResults(`Users matching "${screenname}"`, data.items);
+    });
+
+    document.getElementById("hashtag-search-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const tag = document.getElementById("hashtag-input").value.trim();
+      if (!tag) return;
+      const data = await fetchJson(`/api/search-hashtag?tag=${encodeURIComponent(tag)}`);
+      renderJsonResults(`Posts tagged "${tag}"`, data.items);
+    });
+
+    document.getElementById("reply-search-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const tweetId = document.getElementById("tweet-id-input").value.trim();
+      const query = tweetId ? `?tweet_id=${encodeURIComponent(tweetId)}` : "";
+      const data = await fetchJson(`/api/reply-lookup${query}`);
+      renderJsonResults(tweetId ? `Replies around tweet ${tweetId}` : "Sample replies", data.items);
+    });
+
+    bootstrap();
+  </script>
+</body>
+</html>
