@@ -1,0 +1,126 @@
+
+(mongo) C:\Users\charl\Documents\Arch_Python\UIUC\cs498project>python queries.py
+
+================================================================================
+Collection Counts
+================================================================================
+tweets: 385731
+replies: 35241
+retweets: 735771
+users: 430929
+
+================================================================================
+Query 2: Most Active Location
+================================================================================
+Scanning tweets...
+Scanning replies...
+Scanning retweets...
+Joining user locations in Python...
+{'location': 'España', 'post_count': 13156}
+{'location': 'Madrid', 'post_count': 9307}
+{'location': 'London, England', 'post_count': 8549}
+{'location': 'London', 'post_count': 8470}
+{'location': 'Madrid, Comunidad de Madrid', 'post_count': 5921}
+{'location': 'Barcelona', 'post_count': 5700}
+{'location': 'Barcelona, España', 'post_count': 5437}
+{'location': 'France', 'post_count': 4901}
+{'location': 'Portugal', 'post_count': 4825}
+{'location': 'United Kingdom', 'post_count': 4823}
+
+================================================================================
+Query 3: Most Active User
+================================================================================
+Scanning tweets...
+Scanning replies...
+Scanning retweets...
+{'user_id': '1367380723', 'username': 'Netta Win!', 'screenname': 'Hannah_DeForest', 'total_posts': 325}
+{'user_id': '500893060', 'username': 'Tibor Száraz', 'screenname': 'tiborszaraz', 'total_posts': 284}
+{'user_id': '100624871', 'username': 'LaManadaSomosNosotras', 'screenname': 'LaliteryCandeli', 'total_posts': 257}
+{'user_id': '914467049916833792', 'username': 'Carl Evans', 'screenname': 'CarlEva691', 'total_posts': 230}
+{'user_id': '839449596736724992', 'username': 'alexandre ❤💛💙🌻', 'screenname': 'beren8930', 'total_posts': 197}
+{'user_id': '2193879136', 'username': 'veva 🌻 || AU 📌', 'screenname': 'jetblackyoongi_', 'total_posts': 168}
+{'user_id': '543282988', 'username': 'Madame Monsieur #VOTEMERCY #13', 'screenname': 'MadameMonsieur', 'total_posts': 166}
+{'user_id': '478724003', 'username': '🇮🇹EUROPE VOTE ITALY26 🇮🇹❤️', 'screenname': 'aroseandawave', 'total_posts': 161}
+{'user_id': '432029431', 'username': 'Stop jury robbery in eurovision', 'screenname': 'Drawnitza', 'total_posts': 160}
+{'user_id': '721039377', 'username': 'malena gracia', 'screenname': 'malenatorsfans', 'total_posts': 159}
+
+================================================================================
+Query 4: Top Hashtags
+================================================================================
+Scanning tweets...
+Scanning replies...
+Scanning retweets...
+{'hashtag': 'eurovision', 'count': 833665}
+{'hashtag': 'finaleurovision', 'count': 35503}
+{'hashtag': 'esc2018', 'count': 34288}
+{'hashtag': 'eurovision2018', 'count': 31133}
+{'hashtag': 'allaboard', 'count': 24116}
+{'hashtag': 'escita', 'count': 14879}
+{'hashtag': 'amaiaalfred12points', 'count': 10591}
+{'hashtag': 'israel', 'count': 8404}
+{'hashtag': 'isr', 'count': 6912}
+{'hashtag': 'esc', 'count': 5571}
+{'hashtag': 'cze', 'count': 4905}
+{'hashtag': 'finaleurovisión', 'count': 4618}
+{'hashtag': 'esp', 'count': 4043}
+{'hashtag': 'esf18', 'count': 3811}
+{'hashtag': 'cyp', 'count': 3621}
+{'hashtag': 'hun', 'count': 3530}
+{'hashtag': 'gbr', 'count': 3404}
+{'hashtag': 'eurocancion', 'count': 3185}
+{'hashtag': 'votemercy', 'count': 3169}
+{'hashtag': 'eurovisiongr', 'count': 3068}
+{'hashtag': 'nor', 'count': 3026}
+{'hashtag': 'metamoroesc2018', 'count': 2978}
+{'hashtag': 'mercy', 'count': 2890}
+{'hashtag': 'nonmercy', 'count': 2877}
+{'hashtag': 'den', 'count': 2851}
+
+================================================================================
+Query 6: Nature of Engagement for Verified Users
+================================================================================
+Verified users found: 3659
+{'username': 'Madame Monsieur #VOTEMERCY #13', 'screenname': 'MadameMonsieur', 'total': 166, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 13, 'percentage': 7.83}, {'type': 'reply', 'count': 62, 'percentage': 37.35}, {'type': 'retweet', 'count': 78, 'percentage': 46.99}, {'type': 'quote', 'count': 13, 'percentage': 7.83}]}
+{'username': 'El HuffPost', 'screenname': 'ElHuffPost', 'total': 68, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 68, 'percentage': 100.0}]}
+{'username': 'SBS Australia', 'screenname': 'SBS', 'total': 68, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 32, 'percentage': 47.06}, {'type': 'retweet', 'count': 35, 'percentage': 51.47}, {'type': 'quote', 'count': 1, 'percentage': 1.47}]}
+{'username': 'Ned Raggett', 'screenname': 'NedRaggett', 'total': 53, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 12, 'percentage': 22.64}, {'type': 'retweet', 'count': 37, 'percentage': 69.81}, {'type': 'quote', 'count': 4, 'percentage': 7.55}]}
+{'username': 'eurovision_rtve', 'screenname': 'eurovision_tve', 'total': 47, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 36, 'percentage': 76.6}, {'type': 'retweet', 'count': 11, 'percentage': 23.4}]}
+{'username': 'MirandaN', 'screenname': 'mirandan247', 'total': 44, 'engagement_breakdown': [{'type': 'retweet', 'count': 42, 'percentage': 95.45}, {'type': 'quote', 'count': 2, 'percentage': 4.55}]}
+{'username': 'Eylon A. Levy', 'screenname': 'EylonALevy', 'total': 40, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 15, 'percentage': 37.5}, {'type': 'reply', 'count': 10, 'percentage': 25.0}, {'type': 'retweet', 'count': 14, 'percentage': 35.0}, {'type': 'quote', 'count': 1, 'percentage': 2.5}]}
+{'username': 'Tony Aguilar', 'screenname': 'TonyAguilarOfi', 'total': 39, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 6, 'percentage': 15.38}, {'type': 'retweet', 'count': 33, 'percentage': 84.62}]}
+{'username': 'entertainment.ie', 'screenname': 'entertainmentIE', 'total': 34, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 29, 'percentage': 85.29}, {'type': 'reply', 'count': 4, 'percentage': 11.76}, {'type': 'retweet', 'count': 1, 'percentage': 2.94}]}
+{'username': 'Chris Addison', 'screenname': 'mrchrisaddison', 'total': 33, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 32, 'percentage': 96.97}, {'type': 'retweet', 'count': 1, 'percentage': 3.03}]}
+{'username': 'Catherynne Valente', 'screenname': 'catvalente', 'total': 31, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 19, 'percentage': 61.29}, {'type': 'reply', 'count': 3, 'percentage': 9.68}, {'type': 'retweet', 'count': 9, 'percentage': 29.03}]}
+{'username': 'Logo 🏳️\u200d🌈', 'screenname': 'LogoTV', 'total': 30, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 16, 'percentage': 53.33}, {'type': 'reply', 'count': 6, 'percentage': 20.0}, {'type': 'retweet', 'count': 8, 'percentage': 26.67}]}
+{'username': 'FormulaTV', 'screenname': 'FormulaTV', 'total': 28, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 28, 'percentage': 100.0}]}
+{'username': 'Israel in Ireland', 'screenname': 'IsraelinIreland', 'total': 28, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 2, 'percentage': 7.14}, {'type': 'reply', 'count': 1, 'percentage': 3.57}, {'type': 'retweet', 'count': 22, 'percentage': 78.57}, {'type': 'quote', 'count': 3, 'percentage': 10.71}]}
+{'username': 'BuzzFeed España', 'screenname': 'BuzzFeedEspana', 'total': 27, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 26, 'percentage': 96.3}, {'type': 'reply', 'count': 1, 'percentage': 3.7}]}
+{'username': 'El Mundo Today', 'screenname': 'elmundotoday', 'total': 26, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 16, 'percentage': 61.54}, {'type': 'reply', 'count': 1, 'percentage': 3.85}, {'type': 'retweet', 'count': 6, 'percentage': 23.08}, {'type': 'quote', 'count': 3, 'percentage': 11.54}]}
+{'username': 'Stéphane Bern', 'screenname': 'bernstephane', 'total': 26, 'engagement_breakdown': [{'type': 'retweet', 'count': 25, 'percentage': 96.15}, {'type': 'quote', 'count': 1, 'percentage': 3.85}]}
+{'username': 'Ani Bundel 😻', 'screenname': 'anibundel', 'total': 25, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 18, 'percentage': 72.0}, {'type': 'reply', 'count': 2, 'percentage': 8.0}, {'type': 'retweet', 'count': 4, 'percentage': 16.0}, {'type': 'quote', 'count': 1, 'percentage': 4.0}]}
+{'username': 'Julia Hartley-Brewer', 'screenname': 'JuliaHB1', 'total': 25, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 15, 'percentage': 60.0}, {'type': 'retweet', 'count': 10, 'percentage': 40.0}]}
+{'username': 'Arsen Ostrovsky', 'screenname': 'Ostrov_A', 'total': 25, 'engagement_breakdown': [{'type': 'plain_tweet', 'count': 19, 'percentage': 76.0}, {'type': 'reply', 'count': 2, 'percentage': 8.0}, {'type': 'retweet', 'count': 4, 'percentage': 16.0}]}
+
+================================================================================
+Query 1: Reply Lookup
+================================================================================
+{'tweet_id': '995443358737883136', 'text': '@Eurovision I think the semifinal points should be counted to final result also, then the real winner is  known? what? #eurovision', 'user_id': '901893302848512000', 'in_reply_to_id': '995440696197697536'}
+{'tweet_id': '995443363628421120', 'text': '@_CoffinNails Yo, siendo una chica con cuerpo no normativo, me siento mucho mejor viendo a una chica gorda ganando… https://t.co/wLtryZlKP1', 'user_id': '766599774829211648', 'in_reply_to_id': '995443135978311680'}
+{'tweet_id': '995443363657715713', 'text': '@ProfesorCobos @Alfred_ot2017 @Eurovision Sinceramente. Puesto 23°. Ale a casa.\n(No importa el puesto dice un capulllo de fondo)', 'user_id': '309318761', 'in_reply_to_id': '995422780748455937'}
+{'tweet_id': '995443364026765312', 'text': "Eurovision is about more than the song contest. It allows members to tap into other members' feeds. That's why Aust… https://t.co/zGPOVLB2rQ", 'user_id': '25298032', 'in_reply_to_id': '995442488067350528'}
+{'tweet_id': '995443366560194561', 'text': '@silbidos ATENTA A LO QUE HA ESCRITO EN SU TWITTER MANEL NAVARRO, QUIEN NOS REPRESENTÓ EL AÑO PASADO EN EUROVISION… https://t.co/OVjlPwo295', 'user_id': '630651634', 'in_reply_to_id': '995442794490683392'}
+{'tweet_id': '995443367298371584', 'text': '@Eurovision Europe\n Isreal \nPick one', 'user_id': '882105927364640769', 'in_reply_to_id': '995433967351283712'}
+{'tweet_id': '995443367873056769', 'text': "@P_Benichou tellement libre qu'elle colonise les autres. Tweet lamentable ! #Eurovision", 'user_id': '275179228', 'in_reply_to_id': '995440477049679872'}
+{'tweet_id': '995443375397593088', 'text': '@HRVY \n!! Hanoi !! #Eurovision A security source told to #AmaqAgency: The executor of the operation 🔪(attack) in… https://t.co/EDXiZNc0UA', 'user_id': '333021115', 'in_reply_to_id': '995435165110304768'}
+{'tweet_id': '995443383215820802', 'text': '@abc_es https://t.co/A6ZLjruns2', 'user_id': '2784427855', 'in_reply_to_id': '995436339989540864'}
+{'tweet_id': '995443383882698754', 'text': "I'm going to delete all those eurovision tweets now and clear up my feed, thanks for indulging me! &lt;3", 'user_id': '1106129454', 'in_reply_to_id': '995434662402064387'}
+{'tweet_id': '995443384889290752', 'text': '@iLauraMuir @timeshighered @Eurovision @AdrianKavanagh @MaynoothUni @RachaelPells I second that 😉', 'user_id': '83700816', 'in_reply_to_id': '995437074454142976'}
+{'tweet_id': '995443392409677825', 'text': '@HRVY \n!! Hanoi !! #Eurovision A security source told to #AmaqAgency: The executor of the operation 🔪(attack) in… https://t.co/6YQzR6BXoh', 'user_id': '1323284515', 'in_reply_to_id': '995435165110304768'}
+{'tweet_id': '995443396427812864', 'text': '@stfuryle No it’s not. I just don’t get in general why countries are allowed to attend when they’re not even a part… https://t.co/0UvLm2i4d1', 'user_id': '2405569726', 'in_reply_to_id': '995442886173962240'}
+{'tweet_id': '995443397082124289', 'text': "@ilanberdah Oui, 20 ans, l'an prochain, j'assisterai à mon premier Eurovision. je serai trop content.", 'user_id': '1001477539', 'in_reply_to_id': '995443163270610944'}
+{'tweet_id': '995443399758139392', 'text': '@ManelNMusic Desde mi punto de vista tu directamente no tenias que haber ido a eurovision con esa canción, te eligi… https://t.co/4PAk3grSqW', 'user_id': '2394902741', 'in_reply_to_id': '995435123351973890'}
+{'tweet_id': '995443400982843392', 'text': '@imartinezp_ Man runs on stage during UK Eurovision Competition - Invasion\nCheck it out using the link below\nhttps://t.co/GcgkacVRjf', 'user_id': '901483282340212736', 'in_reply_to_id': '995117595584937984'}
+{'tweet_id': '995443400961871872', 'text': '@Wyvern144 Muy a favor #Eurovision', 'user_id': '399617671', 'in_reply_to_id': '995442801423867904'}
+{'tweet_id': '995443404569014272', 'text': 'Ani Lorak - Shady Lady (Ukraine) #Eurovision \n\nhttps://t.co/xfQ9p5wbEa', 'user_id': '955481454821167104', 'in_reply_to_id': '995442254188859392'}
+{'tweet_id': '995443405227511808', 'text': '@Ferrariman601YT @Coimbra_Bertone @8802gator @richcam427 @StygianNoah @aurora_arielle Last Random Eurovision fact I… https://t.co/JqFp5vJJib', 'user_id': '40110834', 'in_reply_to_id': '995442880025120768'}
+{'tweet_id': '995443409102848000', 'text': '@mishtal The host city of Eurovision is not the capital of the country. The country decided which city has the best… https://t.co/wuFFuA3O8b', 'user_id': '277308610', 'in_reply_to_id': '995433604732907520'}
