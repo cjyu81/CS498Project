@@ -19,7 +19,8 @@
         <h1>Eurovision Twitter Analytics</h1>
         <p class="lede">
           Explore activity from the 2018 Eurovision Final through a MongoDB-backed dashboard with
-          live leaderboards, hashtag trends, verified-user engagement, and reply exploration.
+          Stage 2 query implementations, live leaderboards, hashtag trends, verified-user engagement,
+          and reply-network exploration.
         </p>
       </div>
       <div class="hero-meta">
@@ -32,13 +33,58 @@
           <strong>MongoDB Atlas collections</strong>
         </div>
         <div class="meta-card">
-          <span class="meta-label">Query strategy</span>
-          <strong>Python-side streaming + cache</strong>
+          <span class="meta-label">Featured execution</span>
+          <strong>MongoDB aggregation pipelines</strong>
         </div>
       </div>
     </header>
 
     <main class="dashboard">
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Stage 2 Proposed Queries</h2>
+        </div>
+        <p class="section-copy">
+          These cards mirror the six proposed queries from the Stage 2 submission and point to where each query is demonstrated on this page.
+        </p>
+        <div class="stage2-grid">
+          <article class="stage2-card">
+            <h3>Query 1</h3>
+            <p>Reply thread traversal starting from tweets by a chosen screenname.</p>
+          </article>
+          <article class="stage2-card">
+            <h3>Query 2</h3>
+            <p>Most active country or location based on tweet activity joined with user location data.</p>
+          </article>
+          <article class="stage2-card">
+            <h3>Query 3</h3>
+            <p>Most active user across tweets, replies, and retweets.</p>
+          </article>
+          <article class="stage2-card">
+            <h3>Query 4</h3>
+            <p>Top hashtags across the combined post collections.</p>
+          </article>
+          <article class="stage2-card">
+            <h3>Query 5</h3>
+            <p>Reply trios: three users connected by mutual reply relationships.</p>
+          </article>
+          <article class="stage2-card">
+            <h3>Query 6</h3>
+            <p>Nature of engagement for verified users by tweet type.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Demonstration of 2 MongoDB Queries</h2>
+        </div>
+        <p class="section-copy">
+          Two of the Stage 2 queries are highlighted here as direct MongoDB aggregation pipelines. Each card separates the query definition from the returned result sample.
+        </p>
+        <div id="query-demo-grid" class="query-demo-grid"></div>
+      </section>
+
       <section class="panel">
         <div class="panel-heading">
           <h2>Overview</h2>
@@ -65,24 +111,54 @@
       </section>
 
       <section class="two-column">
-        <article class="panel chart-panel">
+        <article class="panel">
           <div class="panel-heading">
-            <h2>Post Mix</h2>
+            <h2>Query 1: Reply Thread Explorer</h2>
           </div>
-          <canvas id="mix-chart"></canvas>
+          <form id="thread-search-form" class="search-form">
+            <label for="thread-screenname-input">Start from original tweets by screenname</label>
+            <div class="search-row">
+              <input id="thread-screenname-input" name="screenname" placeholder="Enter a screenname" />
+              <button type="submit">Load thread</button>
+            </div>
+          </form>
+          <p id="thread-example-note" class="section-copy compact-copy"></p>
+          <div id="thread-results" class="results-card">
+            <p class="results-placeholder">Run Query 1 to expand reply threads from a selected screenname.</p>
+          </div>
         </article>
-        <article class="panel chart-panel">
+
+        <article class="panel">
           <div class="panel-heading">
-            <h2>Top Hashtags</h2>
+            <h2>Query 5: Reply Trios</h2>
+            <label class="inline-control">
+              <span>Limit</span>
+              <select id="trios-limit">
+                <option>5</option>
+                <option selected>10</option>
+                <option>20</option>
+              </select>
+            </label>
           </div>
-          <canvas id="hashtag-chart"></canvas>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>User A</th>
+                  <th>User B</th>
+                  <th>User C</th>
+                </tr>
+              </thead>
+              <tbody id="trios-table"></tbody>
+            </table>
+          </div>
         </article>
       </section>
 
       <section class="two-column">
         <article class="panel">
           <div class="panel-heading">
-            <h2>Most Active Users</h2>
+            <h2>Query 3: Most Active User</h2>
             <label class="inline-control">
               <span>Limit</span>
               <select id="users-limit">
@@ -108,7 +184,7 @@
 
         <article class="panel">
           <div class="panel-heading">
-            <h2>Geographic Activity</h2>
+            <h2>Query 2: Most Active Country / Location</h2>
             <label class="inline-control">
               <span>Limit</span>
               <select id="locations-limit">
@@ -123,7 +199,7 @@
               <thead>
                 <tr>
                   <th>Location</th>
-                  <th>Posts</th>
+                  <th>Tweet Count</th>
                 </tr>
               </thead>
               <tbody id="locations-table"></tbody>
@@ -133,16 +209,30 @@
       </section>
 
       <section class="two-column">
+        <article class="panel chart-panel">
+          <div class="panel-heading">
+            <h2>Query 4: Top Hashtags</h2>
+          </div>
+          <canvas id="hashtag-chart"></canvas>
+        </article>
         <article class="panel">
           <div class="panel-heading">
-            <h2>Verified User Engagement</h2>
+            <h2>Query 6: Verified User Engagement</h2>
           </div>
           <div id="verified-cards" class="verified-grid"></div>
         </article>
+      </section>
 
+      <section class="two-column">
+        <article class="panel chart-panel">
+          <div class="panel-heading">
+            <h2>Post Mix</h2>
+          </div>
+          <canvas id="mix-chart"></canvas>
+        </article>
         <article class="panel">
           <div class="panel-heading">
-            <h2>Search & Explore</h2>
+            <h2>Supplementary Search</h2>
           </div>
           <div class="search-stack">
             <form id="user-search-form" class="search-form">
@@ -162,15 +252,15 @@
             </form>
 
             <form id="reply-search-form" class="search-form">
-              <label for="tweet-id-input">Explore replies around a tweet ID</label>
+              <label for="tweet-id-input">Direct reply lookup by tweet ID</label>
               <div class="search-row">
-                <input id="tweet-id-input" name="tweet_id" placeholder="tweet id or leave blank for sample replies" />
+                <input id="tweet-id-input" name="tweet_id" placeholder="Tweet ID for replies" />
                 <button type="submit">Inspect replies</button>
               </div>
             </form>
 
             <div id="search-results" class="results-card">
-              <p class="results-placeholder">Run a search to inspect user profiles, hashtag matches, or reply chains.</p>
+              <p class="results-placeholder">Run a search to inspect user profiles, hashtag matches, or reply records.</p>
             </div>
           </div>
         </article>
@@ -184,6 +274,7 @@
     const state = {
       mixChart: null,
       hashtagChart: null,
+      threadExamples: [],
     };
 
     async function fetchJson(url) {
@@ -205,7 +296,7 @@
       document.getElementById("stat-replies").textContent = formatNumber(stats.replies);
       document.getElementById("stat-retweets").textContent = formatNumber(stats.retweets);
       document.getElementById("stat-users").textContent = formatNumber(stats.users);
-      setStatus(`Live from MongoDB Atlas • ${formatNumber(stats.total_posts)} total posts`, "success");
+      setStatus(`Live from MongoDB Atlas - ${formatNumber(stats.total_posts)} total posts`, "success");
 
       const ctx = document.getElementById("mix-chart");
       state.mixChart?.destroy();
@@ -285,11 +376,77 @@
         return `
           <article class="verified-card">
             <h3>${item.username ?? "Unknown user"}</h3>
-            <p>@${item.screenname ?? "unknown"} • ${formatNumber(item.total)} posts</p>
+            <p>@${item.screenname ?? "unknown"} - ${formatNumber(item.total)} posts</p>
             ${bars}
           </article>
         `;
       }).join("") || `<p>No verified-user engagement data found.</p>`;
+    }
+
+    function renderQueryDemoResults(items) {
+      const container = document.getElementById("query-demo-grid");
+      container.innerHTML = items.map((item) => {
+        const results = item.results.map((result) => `<pre>${JSON.stringify(result, null, 2)}</pre>`).join("");
+        return `
+          <article class="query-demo-card">
+            <div class="query-demo-header">
+              <div>
+                <h3>${item.title}</h3>
+                <p>${item.summary}</p>
+              </div>
+              <span class="chip chip-outline">${item.execution_model}</span>
+            </div>
+            <div class="query-demo-body">
+              <div class="query-definition-card">
+                <div>
+                  <p class="query-demo-label">Endpoint</p>
+                  <code>${item.endpoint}</code>
+                </div>
+                <div>
+                  <p class="query-demo-label">Query plan</p>
+                  <pre>${item.pipeline_pretty}</pre>
+                </div>
+              </div>
+              <div class="query-result-card">
+                <p class="query-demo-label">Sample results</p>
+                <div class="query-results-stack">${results}</div>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderThreadResults(items, screenname) {
+      const container = document.getElementById("thread-results");
+      if (!items.length) {
+        container.innerHTML = `<p class="results-placeholder">No reply threads found for "${screenname}".</p>`;
+        return;
+      }
+
+      container.innerHTML = items.map((item) => {
+        const replies = item.thread.map((reply) => `
+          <div class="thread-reply">
+            <div class="thread-meta">@${reply.screenname ?? "unknown"} • depth ${reply.depth} • ${reply.created_at ?? "unknown time"}</div>
+            <p>${reply.text ?? ""}</p>
+          </div>
+        `).join("") || `<p class="results-placeholder">No replies found in this thread.</p>`;
+
+        return `
+          <article class="thread-card">
+            <div class="thread-root">
+              <p class="query-demo-label">Root tweet</p>
+              <h3>@${item.root_tweet.screenname ?? "unknown"}</h3>
+              <p>${item.root_tweet.text ?? ""}</p>
+              <div class="thread-meta">${item.root_tweet.created_at ?? "unknown time"} • ${formatNumber(item.reply_count)} replies discovered</div>
+            </div>
+            <div class="thread-children">
+              <p class="query-demo-label">Replies</p>
+              ${replies}
+            </div>
+          </article>
+        `;
+      }).join("");
     }
 
     function renderJsonResults(title, items) {
@@ -318,18 +475,48 @@
       ]);
     }
 
+    async function loadTrios() {
+      const limit = document.getElementById("trios-limit").value;
+      const data = await fetchJson(`/api/reply-trios?limit=${limit}`);
+      renderTableRows("trios-table", data.items, [
+        (row) => row.userA ? `@${row.userA}` : row.userA_id,
+        (row) => row.userB ? `@${row.userB}` : row.userB_id,
+        (row) => row.userC ? `@${row.userC}` : row.userC_id
+      ]);
+    }
+
+    async function loadThreadExamples() {
+      const data = await fetchJson("/api/reply-thread-examples?limit=3");
+      state.threadExamples = data.items;
+      const note = document.getElementById("thread-example-note");
+      if (data.items.length) {
+        const first = data.items[0];
+        document.getElementById("thread-screenname-input").value = first.screenname || "";
+        note.textContent = `Example screennames with direct replies: ${data.items.map((item) => `@${item.screenname} (${item.direct_reply_count})`).join(", ")}`;
+      } else {
+        note.textContent = "No reply-thread examples were found automatically.";
+      }
+    }
+
+    async function loadReplyThread(screenname) {
+      const data = await fetchJson(`/api/reply-thread?screenname=${encodeURIComponent(screenname)}&limit_tweets=2&limit_replies=20`);
+      renderThreadResults(data.items, screenname);
+    }
+
     async function bootstrap() {
       try {
-        const [stats, hashtags, verified] = await Promise.all([
+        const [demoData, stats, hashtags, verified] = await Promise.all([
+          fetchJson("/api/query-demonstrations"),
           fetchJson("/api/stats"),
           fetchJson("/api/top-hashtags?limit=20"),
           fetchJson("/api/verified-engagement?limit=8")
         ]);
 
+        renderQueryDemoResults(demoData.items);
         renderOverview(stats);
         renderHashtagChart(hashtags.items);
         renderVerifiedCards(verified.items);
-        await Promise.all([loadUsers(), loadLocations()]);
+        await Promise.all([loadUsers(), loadLocations(), loadTrios(), loadThreadExamples()]);
       } catch (error) {
         console.error(error);
         setStatus("Unable to load analytics. Check the API or MongoDB connection.", "error");
@@ -338,6 +525,14 @@
 
     document.getElementById("users-limit").addEventListener("change", loadUsers);
     document.getElementById("locations-limit").addEventListener("change", loadLocations);
+    document.getElementById("trios-limit").addEventListener("change", loadTrios);
+
+    document.getElementById("thread-search-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const screenname = document.getElementById("thread-screenname-input").value.trim();
+      if (!screenname) return;
+      await loadReplyThread(screenname);
+    });
 
     document.getElementById("user-search-form").addEventListener("submit", async (event) => {
       event.preventDefault();

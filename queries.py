@@ -1,4 +1,7 @@
 from analytics import (
+    get_reply_thread,
+    get_reply_thread_examples,
+    get_reply_trios,
     get_reply_lookup,
     get_stats,
     get_top_hashtags,
@@ -15,10 +18,26 @@ def header(title):
 
 
 def counts():
-    header("Collection Counts")
+    header("Supplementary: Collection Counts")
     stats = get_stats()
     for collection in ["tweets", "replies", "retweets", "users"]:
         print(f"{collection}: {stats[collection]}")
+
+
+def reply_thread(screenname="Eurovision", limit_tweets=2, limit_replies=10):
+    header("Query 1: Reply Thread")
+    items = get_reply_thread(screenname, limit_tweets=limit_tweets, limit_replies=limit_replies)
+    if not items:
+        print({"screenname": screenname, "message": "No reply threads found for this screenname."})
+        print("Suggested screen names with direct replies:")
+        for example in get_reply_thread_examples():
+            print(example)
+        return
+
+    for item in items:
+        print({"root_tweet": item["root_tweet"], "reply_count": item["reply_count"]})
+        for reply in item["thread"]:
+            print(reply)
 
 
 def most_active_user(limit=10):
@@ -45,19 +64,23 @@ def verified_engagement(limit=20):
         print(item)
 
 
+def reply_trios(limit=10):
+    header("Query 5: Reply Trios")
+    for trio in get_reply_trios(limit):
+        print(trio)
+
+
 def reply_lookup(limit=20):
-    header("Query 1: Reply Lookup")
+    header("Supplementary: Direct Reply Lookup")
     for reply in get_reply_lookup(limit=limit):
         print(reply)
 
 
 if __name__ == "__main__":
     counts()
-
+    reply_thread()
     most_active_location()
     most_active_user()
     top_hashtags()
+    reply_trios()
     verified_engagement()
-
-    # Optional demo query
-    reply_lookup()
